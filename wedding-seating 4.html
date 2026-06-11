@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Samuel &amp; Tiffany — Seating</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Montserrat:wght@300;400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"><\/script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --forest:#2d4a35;--forest-dark:#1e3325;--forest-mid:#3d6147;
+  --sage:#8fac8f;--sage-light:#c8dbc8;--mint:#e8f0e8;
+  --cream:#f7f5f0;--offwhite:#fafaf7;--gold:#c9a84c;
+  --ink:#1a2a1e;--muted:#5a7060;--border:rgba(45,74,53,0.15);
+  --radius:16px;--shadow:0 4px 32px rgba(30,51,37,0.10);
+}
+html{scroll-behavior:smooth}
+body{font-family:"Montserrat",sans-serif;background:var(--cream);color:var(--ink);min-height:100vh}
+
+/* Leaf bg */
+.leaf-bg{pointer-events:none;position:fixed;inset:0;z-index:0;overflow:hidden;opacity:0.06}
+.leaf-bg svg{position:absolute}
+
+/* Header */
+header{position:relative;z-index:1;background:var(--offwhite);text-align:center;padding:3rem 1rem 2.5rem;border-bottom:1px solid var(--border)}
+.arch{display:inline-block;border:2px solid var(--forest);border-radius:120px 120px 0 0;padding:2.5rem 3rem 1.5rem;margin-bottom:1rem}
+.eyebrow{font-size:0.62rem;letter-spacing:0.22em;text-transform:uppercase;color:var(--muted);margin-bottom:0.75rem}
+.couple{font-family:"Cormorant Garamond",serif;font-size:clamp(1.8rem,5.5vw,3rem);font-weight:300;color:var(--forest-dark);line-height:1.2;font-style:italic}
+.amp{font-size:clamp(1.4rem,3.5vw,2rem);color:var(--sage);display:block;margin:0.15rem 0}
+.tagline{font-family:"Cormorant Garamond",serif;font-size:1.1rem;font-style:italic;color:var(--muted);margin-top:1rem;letter-spacing:0.05em}
+.dateline{font-size:0.68rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--forest);margin-top:0.5rem}
+
+/* Nav */
+nav{position:sticky;top:0;z-index:100;background:var(--forest-dark);display:flex;justify-content:center;border-bottom:2px solid var(--gold)}
+nav button{background:none;border:none;padding:0.85rem 1.4rem;font-family:"Montserrat",sans-serif;font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.55);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all 0.2s}
+nav button.active,nav button:hover{color:#fff;border-bottom-color:var(--gold)}
+
+/* Main */
+main{max-width:700px;margin:0 auto;padding:2.5rem 1.25rem 5rem;position:relative;z-index:1}
+.section{display:none}.section.active{display:block}
+
+/* Section head */
+.sec-head{text-align:center;margin-bottom:2rem}
+.sec-head h2{font-family:"Cormorant Garamond",serif;font-size:1.9rem;font-weight:300;font-style:italic;color:var(--forest-dark)}
+.sec-head p{font-size:0.78rem;color:var(--muted);margin-top:0.35rem;letter-spacing:0.05em}
+
+/* Lookup */
+.search-wrap{position:relative;margin-bottom:1.5rem}
+.search-wrap input{width:100%;padding:1rem 1.5rem;font-size:1rem;font-family:"Montserrat",sans-serif;border:1.5px solid var(--sage-light);border-radius:50px;background:var(--offwhite);color:var(--ink);outline:none;text-align:center;letter-spacing:0.03em;transition:border-color 0.2s,box-shadow 0.2s}
+.search-wrap input:focus{border-color:var(--forest);box-shadow:0 0 0 4px rgba(45,74,53,0.09)}
+.search-wrap input::placeholder{color:var(--sage)}
+
+.result-card{background:var(--offwhite);border:1.5px solid var(--sage-light);border-radius:var(--radius);padding:2.5rem 2rem;text-align:center;display:none;box-shadow:var(--shadow);animation:fadeUp 0.35s ease}
+.result-card.show{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.r-welcome{font-size:0.65rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.r-name{font-family:"Cormorant Garamond",serif;font-size:2.2rem;font-weight:300;font-style:italic;color:var(--forest-dark);margin-bottom:1.5rem;line-height:1.2}
+.r-label{font-size:0.62rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);margin-bottom:0.35rem}
+.r-table{font-family:"Cormorant Garamond",serif;font-size:4rem;font-weight:300;color:var(--forest);line-height:1}
+.r-companions{font-size:0.8rem;color:var(--muted);margin-top:1.5rem;border-top:1px solid var(--border);padding-top:1.25rem;line-height:1.9}
+.r-companions strong{color:var(--ink);font-weight:500}
+
+.not-found{text-align:center;padding:1.5rem;background:rgba(201,168,76,0.07);border:1px solid rgba(201,168,76,0.22);border-radius:var(--radius);font-size:0.85rem;color:var(--muted);font-style:italic;display:none}
+.not-found.show{display:block}
+.mm-list p{font-size:0.78rem;color:var(--muted);text-align:center;margin:0.75rem 0;font-style:italic}
+.match-btn{display:flex;justify-content:space-between;align-items:center;width:100%;padding:0.85rem 1.25rem;background:var(--offwhite);border:1px solid var(--border);border-radius:var(--radius);font-family:"Montserrat",sans-serif;font-size:0.88rem;color:var(--ink);cursor:pointer;margin-bottom:0.5rem;transition:background 0.15s;text-align:left}
+.match-btn:hover{background:var(--mint);border-color:var(--sage)}
+.tag{font-size:0.73rem;color:var(--muted);background:var(--mint);padding:3px 10px;border-radius:50px}
+
+/* Admin */
+.card{background:var(--offwhite);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
+.card h3{font-family:"Cormorant Garamond",serif;font-size:1.25rem;font-weight:400;color:var(--forest-dark);margin-bottom:1rem;font-style:italic}
+.add-row{display:flex;gap:8px;flex-wrap:wrap}
+.add-row input{flex:1;min-width:130px;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:50px;font-family:"Montserrat",sans-serif;font-size:0.85rem;background:var(--cream);color:var(--ink);outline:none}
+.add-row input:focus{border-color:var(--forest)}
+.btn{height:40px;padding:0 20px;border:1px solid var(--forest);border-radius:50px;font-family:"Montserrat",sans-serif;font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--forest);background:transparent;cursor:pointer;transition:all 0.2s;white-space:nowrap}
+.btn:hover{background:var(--forest);color:#fff}
+.btn.primary{background:var(--forest);color:#fff}
+.btn.primary:hover{background:var(--forest-dark)}
+.btn-sm{height:30px;padding:0 12px;font-size:0.68rem}
+table{width:100%;border-collapse:collapse;font-size:0.84rem}
+thead th{padding:0.6rem 1rem;text-align:left;font-size:0.62rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);font-weight:500;border-bottom:1px solid var(--border);background:var(--cream)}
+tbody tr{border-bottom:1px solid var(--border);transition:background 0.1s}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover{background:var(--mint)}
+tbody td{padding:0.65rem 1rem}
+.tbadge{display:inline-block;padding:3px 12px;border-radius:50px;font-size:0.73rem;background:var(--mint);color:var(--forest-dark);border:1px solid var(--sage-light)}
+.del-btn{background:none;border:none;color:var(--sage);cursor:pointer;font-size:1rem;padding:2px 6px;border-radius:4px}
+.del-btn:hover{color:var(--forest-dark);background:var(--mint)}
+.empty{text-align:center;padding:2rem;color:var(--muted);font-style:italic;font-size:0.9rem}
+.cbadge{background:var(--mint);color:var(--forest-dark);padding:3px 12px;border-radius:50px;font-size:0.73rem}
+
+/* QR */
+.qr-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:1.25rem}
+.qr-card{background:var(--offwhite);border:1px solid var(--border);border-radius:var(--radius);padding:1.25rem;text-align:center;box-shadow:var(--shadow)}
+.qr-card h4{font-family:"Cormorant Garamond",serif;font-size:1.3rem;font-weight:400;font-style:italic;color:var(--forest-dark);margin-bottom:0.2rem}
+.qr-sub{font-size:0.68rem;color:var(--muted);margin-bottom:1rem;letter-spacing:0.06em}
+.qr-canvas{display:flex;justify-content:center;margin-bottom:0.75rem}
+.qr-names{font-size:0.7rem;color:var(--muted);line-height:1.85;text-align:left}
+
+/* Settings */
+.scard{background:var(--offwhite);border:1px solid var(--border);border-radius:var(--radius);padding:1.5rem;margin-bottom:1.25rem}
+.scard h3{font-family:"Cormorant Garamond",serif;font-size:1.25rem;font-weight:400;font-style:italic;color:var(--forest-dark);margin-bottom:1rem}
+.field{margin-bottom:0.85rem}
+.field label{display:block;font-size:0.65rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);margin-bottom:0.4rem}
+.field input{width:100%;height:40px;padding:0 12px;border:1px solid var(--border);border-radius:8px;font-family:"Montserrat",sans-serif;font-size:0.9rem;background:var(--cream);color:var(--ink);outline:none}
+.field input:focus{border-color:var(--forest)}
+
+@media print{header,nav,.np,.section:not(#qr){display:none!important}#qr{display:block!important}.qr-card{break-inside:avoid}body{background:white}}
+@media(max-width:480px){.arch{padding:1.75rem 1.5rem 1.25rem}nav button{padding:0.85rem 0.75rem;font-size:0.58rem}.qr-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<div class="leaf-bg" aria-hidden="true">
+  <svg width="280" height="420" style="top:-80px;left:-70px" viewBox="0 0 280 420"><path d="M80,400 Q10,210 140,10 Q200,190 80,400Z" fill="#2d4a35"/><path d="M115,390 Q50,210 165,20 Q220,195 115,390Z" fill="#3d6147" opacity=".55"/></svg>
+  <svg width="280" height="420" style="top:-60px;right:-60px" viewBox="0 0 280 420"><path d="M200,400 Q270,210 140,10 Q80,190 200,400Z" fill="#2d4a35"/><path d="M165,390 Q230,210 115,20 Q60,195 165,390Z" fill="#3d6147" opacity=".55"/></svg>
+  <svg width="180" height="280" style="bottom:12%;left:-35px" viewBox="0 0 180 280"><path d="M55,270 Q5,140 90,10 Q130,130 55,270Z" fill="#2d4a35"/></svg>
+  <svg width="180" height="280" style="bottom:8%;right:-25px" viewBox="0 0 180 280"><path d="M125,270 Q175,140 90,10 Q50,130 125,270Z" fill="#2d4a35"/></svg>
+</div>
+
+<header>
+  <div class="arch">
+    <div class="eyebrow">Inviting you to</div>
+    <div class="couple">
+      Samuel Dibley
+      <span class="amp">+</span>
+      Tiffany Nana Afua Appiah
+    </div>
+  </div>
+  <div class="tagline">A Journey To Forever</div>
+  <div class="dateline">August 22, 2026 &nbsp;&middot;&nbsp; King&#39;s Church, Manchester</div>
+</header>
+
+<nav>
+  <button class="active" onclick="show('lookup')">Find my seat</button>
+  <button onclick="show('admin')">Manage guests</button>
+  <button onclick="show('qr');buildQR()">QR codes</button>
+  <button onclick="show('settings')">Settings</button>
+</nav>
+
+<main>
+  <section id="lookup" class="section active">
+    <div class="sec-head" style="padding-top:1rem">
+      <h2>Find your table</h2>
+      <p>Type your name below</p>
+    </div>
+    <div class="search-wrap">
+      <input type="text" id="q" placeholder="Start typing your name&hellip;" oninput="doLookup()" autocomplete="off">
+    </div>
+    <div id="result-card" class="result-card"></div>
+    <div id="not-found" class="not-found">We couldn&#39;t find that name &mdash; please check your spelling or ask a member of the wedding party.</div>
+    <div id="mm" class="mm-list"></div>
+  </section>
+
+  <section id="admin" class="section">
+    <div class="sec-head"><h2>Guest list</h2><p>Add, edit or remove guests</p></div>
+    <div class="card">
+      <h3>Add a guest</h3>
+      <div class="add-row">
+        <input type="text" id="mn" placeholder="Full name" onkeydown="if(event.key==='Enter')addM()">
+        <input type="text" id="mt" placeholder="Table" style="max-width:140px" onkeydown="if(event.key==='Enter')addM()">
+        <button class="btn primary" onclick="addM()">Add</button>
+      </div>
+    </div>
+    <div class="card" style="padding:0;overflow:hidden">
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:1rem 1.25rem;border-bottom:1px solid var(--border)">
+        <h3 style="margin:0">All guests &nbsp;<span class="cbadge" id="gc">0</span></h3>
+        <button class="btn btn-sm" onclick="clearG()">Clear all</button>
+      </div>
+      <div id="gtb"></div>
+    </div>
+  </section>
+
+  <section id="qr" class="section">
+    <div class="sec-head"><h2>Table QR codes</h2><p>Print and place at the venue or on each table</p></div>
+    <div class="np" style="margin-bottom:1.5rem;display:flex;gap:10px">
+      <button class="btn primary" onclick="window.print()">Print all</button>
+    </div>
+    <div id="qrg" class="qr-grid"></div>
+  </section>
+
+  <section id="settings" class="section">
+    <div class="sec-head"><h2>Settings</h2></div>
+    <div class="scard">
+      <h3>Wedding details</h3>
+      <div class="field"><label>Couple names</label><input type="text" id="sn" value="Samuel Dibley &amp; Tiffany Nana Afua Appiah"></div>
+      <div class="field"><label>Date</label><input type="date" id="sd" value="2026-08-22"></div>
+      <div class="field"><label>Venue</label><input type="text" id="sv" value="King's Church, Manchester"></div>
+      <button class="btn primary" style="margin-top:0.5rem" onclick="saveS()">Save</button>
+    </div>
+    <div class="scard">
+      <h3>QR code URL</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:0.75rem;font-style:italic">Once your site is live on GitHub Pages, paste the URL here so QR codes link to the right place.</p>
+      <div class="field"><label>Your website URL</label><input type="text" id="su" placeholder="https://yourusername.github.io/wedding-seating"></div>
+      <button class="btn primary" style="margin-top:0.5rem" onclick="saveS()">Save</button>
+    </div>
+    <div class="scard">
+      <h3>Backup &amp; restore</h3>
+      <p style="font-size:0.82rem;color:var(--muted);margin-bottom:1rem;font-style:italic">Export a backup so you never lose your guest list.</p>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <button class="btn" onclick="expD()">Export backup</button>
+        <button class="btn" onclick="document.getElementById('ri').click()">Restore backup</button>
+        <input type="file" id="ri" accept=".json" style="display:none" onchange="restD(this.files[0])">
+      </div>
+    </div>
+  </section>
+</main>
+
+<script>
+const PRESET = [{"name": "Samuel Dibley", "table": "Head Table"}, {"name": "Rosemond", "table": "Table 1"}, {"name": "Uncle Kwadwo", "table": "Table 2"}, {"name": "Miguel", "table": "Table 3"}, {"name": "Jacinta", "table": "Table 4"}, {"name": "George Dibley", "table": "Table 5"}, {"name": "Alison", "table": "Table 6"}, {"name": "Chantell", "table": "Table 7"}, {"name": "Somto", "table": "Table 8"}, {"name": "Tiffany Appiah", "table": "Head Table"}, {"name": "Gerald", "table": "Table 1"}, {"name": "Auntie Emefa", "table": "Table 2"}, {"name": "Shogan", "table": "Table 3"}, {"name": "Joy", "table": "Table 4"}, {"name": "Michael Dibley", "table": "Table 5"}, {"name": "Alison plus one", "table": "Table 6"}, {"name": "Chantel plus one", "table": "Table 7"}, {"name": "Odera", "table": "Table 8"}, {"name": "Yakoba", "table": "Table 1"}, {"name": "Auntie Philo", "table": "Table 2"}, {"name": "Sweepy", "table": "Table 3"}, {"name": "Stacey", "table": "Table 4"}, {"name": "Lisa Dibley", "table": "Table 5"}, {"name": "Ella", "table": "Table 6"}, {"name": "Michael", "table": "Table 7"}, {"name": "Muriel", "table": "Table 8"}, {"name": "Kobbi", "table": "Table 1"}, {"name": "Auntie philo", "table": "Table 2"}, {"name": "Shirley", "table": "Table 3"}, {"name": "Geneen", "table": "Table 4"}, {"name": "Alex Dibley", "table": "Table 5"}, {"name": "Ella plus one", "table": "Table 6"}, {"name": "Deborah", "table": "Table 7"}, {"name": "Boma", "table": "Table 8"}, {"name": "Aunt Elaine", "table": "Table 1"}, {"name": "Sis Naana", "table": "Table 2"}, {"name": "Mory", "table": "Table 3"}, {"name": "Dorcas", "table": "Table 4"}, {"name": "Andy", "table": "Table 5"}, {"name": "Lyla", "table": "Table 6"}, {"name": "Tammy", "table": "Table 7"}, {"name": "Ben kwofie", "table": "Table 8"}, {"name": "Aunt Yacoba", "table": "Table 1"}, {"name": "Jacqueline", "table": "Table 2"}, {"name": "Collins", "table": "Table 3"}, {"name": "Samara", "table": "Table 4"}, {"name": "Keely", "table": "Table 5"}, {"name": "Nana Lynn", "table": "Table 6"}, {"name": "Tammy plus one", "table": "Table 7"}, {"name": "Nana Adwoa", "table": "Table 8"}, {"name": "Richard", "table": "Table 1"}, {"name": "Ben King", "table": "Table 3"}, {"name": "Tomi", "table": "Table 4"}, {"name": "Karen", "table": "Table 5"}, {"name": "GDad Doug", "table": "Table 6"}, {"name": "Victor", "table": "Table 7"}, {"name": "Ramah", "table": "Table 8"}, {"name": "Andrew", "table": "Table 1"}, {"name": "Latifa", "table": "Table 4"}, {"name": "Adrian", "table": "Table 7"}, {"name": "Joachim", "table": "Table 9"}, {"name": "Tony", "table": "Table 10"}, {"name": "Abi", "table": "Table 9"}, {"name": "Leah", "table": "Table 10"}, {"name": "Jeremiah", "table": "Table 9"}, {"name": "Leah Husband", "table": "Table 10"}, {"name": "Femi", "table": "Table 9"}, {"name": "Lulu", "table": "Table 10"}, {"name": "Tunde", "table": "Table 9"}, {"name": "Princess", "table": "Table 10"}, {"name": "Jumai", "table": "Table 9"}, {"name": "Petra", "table": "Table 10"}, {"name": "Deji", "table": "Table 9"}, {"name": "Dia", "table": "Table 10"}, {"name": "Joana", "table": "Table 9"}];
+let guests=[], settings={names:"Samuel Dibley & Tiffany Nana Afua Appiah",date:"2026-08-22",venue:"King's Church, Manchester",url:""};
+function save(){try{localStorage.setItem("sdt_g",JSON.stringify(guests));localStorage.setItem("sdt_s",JSON.stringify(settings))}catch(e){}}
+function load(){try{const g=localStorage.getItem("sdt_g"),s=localStorage.getItem("sdt_s");guests=g?JSON.parse(g):[...PRESET];if(s)Object.assign(settings,JSON.parse(s))}catch(e){guests=[...PRESET]}}
+load();renderG();
+
+function show(id){document.querySelectorAll(".section").forEach(el=>el.classList.remove("active"));document.querySelectorAll("nav button").forEach(el=>el.classList.remove("active"));document.getElementById(id).classList.add("active");const m={lookup:0,admin:1,qr:2,settings:3};document.querySelectorAll("nav button")[m[id]].classList.add("active")}
+
+function doLookup(){
+  const q=document.getElementById("q").value.trim().toLowerCase();
+  const rc=document.getElementById("result-card"),nf=document.getElementById("not-found"),mm=document.getElementById("mm");
+  rc.classList.remove("show");nf.classList.remove("show");mm.innerHTML="";
+  if(!q||q.length<2)return;
+  const hits=guests.filter(g=>g.name.toLowerCase().includes(q));
+  if(!hits.length){nf.classList.add("show");return}
+  if(hits.length===1){showR(hits[0]);return}
+  mm.innerHTML="<p>Multiple guests found &mdash; select your name:</p>"+hits.map(g=>`<button class="match-btn" onclick="showR(${JSON.stringify(JSON.stringify(g))})">${esc(g.name)}<span class="tag">${esc(g.table)}</span></button>`).join("");
+}
+function showR(g){if(typeof g==="string")g=JSON.parse(g);const comp=guests.filter(x=>x.table===g.table&&x.name!==g.name);document.getElementById("result-card").innerHTML=`<div class="r-welcome">Welcome</div><div class="r-name">${esc(g.name)}</div><div class="r-label">You are seated at</div><div class="r-table">${esc(g.table)}</div>${comp.length?"<div class=\"r-companions\">Also at your table: "+comp.map(c=>"<strong>"+esc(c.name)+"</strong>").join(", ")+"</div>":""}`;document.getElementById("result-card").classList.add("show");document.getElementById("not-found").classList.remove("show");document.getElementById("mm").innerHTML=""}
+
+function addM(){const n=document.getElementById("mn").value.trim(),t=document.getElementById("mt").value.trim();if(!n||!t){alert("Please enter a name and table.");return}guests.push({name:n,table:t});save();renderG();document.getElementById("mn").value="";document.getElementById("mt").value="";document.getElementById("mn").focus()}
+function delG(i){guests.splice(i,1);save();renderG()}
+function clearG(){if(!guests.length||!confirm("Remove all "+guests.length+" guests?"))return;guests=[];save();renderG()}
+function renderG(){
+  const el=document.getElementById("gc");if(el)el.textContent=guests.length;
+  const b=document.getElementById("gtb");
+  if(!guests.length){b.innerHTML='<div class="empty">No guests yet.</div>';return}
+  const s=guests.map((g,i)=>({...g,i})).sort((a,b)=>a.name.localeCompare(b.name));
+  b.innerHTML='<table><thead><tr><th>Guest</th><th>Table</th><th></th></tr></thead><tbody>'+s.map(g=>`<tr><td>${esc(g.name)}</td><td><span class="tbadge">${esc(g.table)}</span></td><td><button class="del-btn" onclick="delG(${g.i})">&#x2715;</button></td></tr>`).join("")+"</tbody></table>";
+}
+
+function buildQR(){
+  const tables={};guests.forEach(g=>{if(!tables[g.table])tables[g.table]=[];tables[g.table].push(g.name)});
+  const keys=Object.keys(tables).sort((a,b)=>{if(a==="Head Table")return -1;if(b==="Head Table")return 1;const na=parseInt(a),nb=parseInt(b);return isNaN(na)||isNaN(nb)?a.localeCompare(b):na-nb});
+  const grid=document.getElementById("qrg");grid.innerHTML="";
+  const base=(settings.url||window.location.href.split("?")[0].split("#")[0]).replace(/\/$/,"");
+  if(!keys.length){grid.innerHTML='<p class="empty">Add guests first.</p>';return}
+  keys.forEach(table=>{
+    const card=document.createElement("div");card.className="qr-card";
+    const qid="q"+table.replace(/[^a-z0-9]/gi,"_");
+    const names=tables[table];
+    card.innerHTML=`<h4>${esc(table)}</h4><div class="qr-sub">${names.length} guest${names.length!==1?"s":""}</div><div class="qr-canvas" id="${qid}"></div><div class="qr-names">${names.map(n=>"&middot; "+esc(n)).join("<br>")}</div>`;
+    grid.appendChild(card);
+    setTimeout(()=>{const el=document.getElementById(qid);if(el&&typeof QRCode!=="undefined")new QRCode(el,{text:base+"?table="+encodeURIComponent(table),width:110,height:110,colorDark:"#1e3325",colorLight:"#ffffff",correctLevel:QRCode.CorrectLevel.M})},80);
+  });
+}
+
+function saveS(){settings.names=document.getElementById("sn").value.trim();settings.date=document.getElementById("sd").value;settings.venue=document.getElementById("sv").value.trim();settings.url=document.getElementById("su").value.trim();save();show("lookup")}
+function expD(){const b=new Blob([JSON.stringify({guests,settings},null,2)],{type:"application/json"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="wedding-seating-backup.json";a.click()}
+function restD(f){if(!f)return;const r=new FileReader();r.onload=e=>{try{const d=JSON.parse(e.target.result);if(d.guests)guests=d.guests;if(d.settings)Object.assign(settings,d.settings);save();renderG();alert("Restored!")}catch(e){alert("Could not read backup.")}};r.readAsText(f)}
+function esc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;")}
+<\/script>
+</body>
+</html>
